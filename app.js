@@ -5,12 +5,17 @@ app.use(express.json());
 const TOKEN = process.env.GITHUB_TOKEN;
 
 app.post('/webhook', async (req, res) => {
-  console.log("webhook start");
+  console.log("webhook start....");
    
   const { action, pull_request: pr, repository } = req.body;
 
   // Only process merged PRs
-  if (action !== 'closed' || !pr.merged) return;
+  console.log("action: ", action);
+  console.log("pr.merged: ", pr.merged);
+  if (action !== 'closed' || !pr.merged) {
+    console.log("not a merged PR");
+    return;
+  }
 
   const owner = repository.owner.login;   // "Sunil117798"
   const repo  = repository.name;          // "testcase-generation"
