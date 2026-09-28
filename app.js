@@ -4,6 +4,10 @@ const express = require('express');
 // This initializes a new Express application.
 const app = express();
 
+
+app.get("/",(req,res)=>{
+    res.send("Hello World")
+})
 // This defines a POST route at the `/webhook` path. This path matches the path that you specified for the smee.io forwarding. For more information, see [Forward webhooks](#forward-webhooks).
 //
 // Once you deploy your code to a server and update your webhook URL, you should change this to match the path portion of the URL for your webhook.
