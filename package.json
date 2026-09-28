@@ -5,6 +5,8 @@
   },
   "dependencies": {
     "express": "^5.2.1",
-    "nodemon": "^3.1.14"
+    "global": "^4.4.0",
+    "nodemon": "^3.1.14",
+    "smee-client": "^5.0.0"
   }
 }
