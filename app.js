@@ -6,30 +6,13 @@ const TOKEN = process.env.GITHUB_TOKEN;
 
 app.post('/webhook', async (req, res) => {
   const { action, pull_request: pr, repository } = req.body;
-
-  // Only act on the event you care about
-  if (action === 'closed' && pr.merged) {
-    const owner = repository.owner.login;
-    const repo  = repository.name;
-    const num   = pr.number;
-
-    // Get the diff
-    const diffRes = await fetch(
-      `https://api.github.com/repos/${owner}/${repo}/pulls/${num}`,
-      {
-        headers: {
-          Authorization: `Bearer ${TOKEN}`,
-          Accept: 'application/vnd.github.v3.diff',
-          'User-Agent': 'my-app'
-        }
-      }
-    );
-    const diff = await diffRes.text();
-    console.log(diff);
-  }
+  console.log("sunil kumar is here")
 
   res.sendStatus(200);
 });
+
+
+
 
 app.get("/",(req,res)=>{
         res.send("Hello World")
