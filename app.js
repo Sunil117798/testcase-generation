@@ -11,6 +11,38 @@ const GITHUB_TOKEN = process.env.GITHUB_TOKEN;
 const HF_TOKEN = process.env.HF_TOKEN;
 const hf = new HfInference(HF_TOKEN);
 
+// Helper function for retry with exponential backoff
+async function fetchWithRetry(url, options = {}, maxRetries = 3, initialDelay = 1000) {
+  for (let attempt = 1; attempt <= maxRetries; attempt++) {
+    try {
+      const response = await fetch(url, options);
+      
+      if (response.ok) {
+        return response;
+      }
+      
+      // If rate limited or server unavailable, retry
+      if (response.status === 403 || response.status === 503 || response.status === 502) {
+        const delay = initialDelay * Math.pow(2, attempt - 1);
+        console.log(`Attempt ${attempt} failed with status ${response.status}. Retrying in ${delay}ms...`);
+        await new Promise(resolve => setTimeout(resolve, delay));
+        continue;
+      }
+      
+      // For other errors, throw immediately
+      throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+    } catch (error) {
+      if (attempt === maxRetries) {
+        throw error;
+      }
+      const delay = initialDelay * Math.pow(2, attempt - 1);
+      console.log(`Attempt ${attempt} failed: ${error.message}. Retrying in ${delay}ms...`);
+      await new Promise(resolve => setTimeout(resolve, delay));
+    }
+  }
+  throw new Error('Max retries exceeded');
+}
+
 app.post('/webhook', async (req, res) => {
   console.log("webhook start....");
    
@@ -34,8 +66,8 @@ app.post('/webhook', async (req, res) => {
   const diffurl = `https://github.com/${repository.owner.login}/${repository.name}/pull/${pull_request.number}.diff`;
   console.log("Diff URL:", diffurl);
 
-  // Fetch the diff
-  const diffRes = await fetch(diffurl);
+  // Fetch the diff with retry logic
+  const diffRes = await fetchWithRetry(diffurl);
   const diff = await diffRes.text();
   console.log(`=== Diff for PR #${pull_request.number} (${pull_request.title}) ===`);
 
