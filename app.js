@@ -96,7 +96,7 @@ app.get("/chat", async (req, res) => {
     });
 
     const llmOutput = response.choices[0].message.content;
-    console.log("=== LLM Analysis ===");
+    console.log("=====LLM Analysis =====");
     console.log(llmOutput);
     
     res.json({ response: llmOutput });
