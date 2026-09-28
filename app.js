@@ -6,7 +6,7 @@ const TOKEN = process.env.GITHUB_TOKEN;
 
 app.post('/webhook', async (req, res) => {
   const { action, pull_request: pr, repository } = req.body;
-  console.log("sunil kumar is here")
+  console.log("my name is sunil kumar")
 
   res.sendStatus(200);
 });
