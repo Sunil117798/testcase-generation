@@ -68,11 +68,23 @@ app.post('/webhook', async (req, res) => {
     console.log("=== Generated Unit Test Cases ===");
     console.log(testCases);
 
-    // Save test cases to file
-    const testFilename = `pr-${pull_request.number}-${Date.now()}-test-cases.txt`;
-    const testFilepath = path.join(diffsDir, testFilename);
-    fs.writeFileSync(testFilepath, testCases);
-    console.log(`Test cases saved to: ${testFilepath}`);
+    // Create test directory
+    const testDir = path.join(__dirname, 'test');
+    if (!fs.existsSync(testDir)) {
+      fs.mkdirSync(testDir);
+    }
+
+    // Extract file names from diff to use as test file names
+    const changedFiles = diff.match(/a\/(.*?)\s+b\//g);
+    const fileNames = changedFiles ? changedFiles.map(f => f.replace(/a\/(.*?)\s+b\//, '').replace(/\//g, '-')) : ['general'];
+    
+    // Save test cases for each changed file
+    fileNames.forEach(fileName => {
+      const testFilename = `${fileName}.test.js`;
+      const testFilepath = path.join(testDir, testFilename);
+      fs.writeFileSync(testFilepath, testCases);
+      console.log(`Test cases saved to: ${testFilepath}`);
+    });
   } catch (error) {
     console.error("Error generating test cases:", error.message);
   }
