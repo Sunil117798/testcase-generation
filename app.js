@@ -7,41 +7,18 @@ const TOKEN = process.env.GITHUB_TOKEN;
 app.post('/webhook', async (req, res) => {
   console.log("webhook start....");
    
-  const { action, pull_request: pr, repository } = req.body;
+  const { action, pull_request, repository } = req.body;
 
   // Check if this is a PR event
-  if (!pr) {
+  if (!pull_request) {
     console.log("Not a pull request event");
     return res.sendStatus(200);
   }
 
-  // Only process merged PRs
-  console.log("action: ", action);
-  console.log("pr.merged: ", pr.merged);
-  if (action !== 'closed' || !pr.merged) {
-    console.log("not a merged PR");
-    return res.sendStatus(200);
-  }
+  const diffurl = `https://github.com/${repository.owner.login}/${repository.name}/pull/${pull_request.number}.diff`;
+  console.log("Diff URL:", diffurl);
 
-  const owner = repository.owner.login;   // "Sunil117798"
-  const repo  = repository.name;          // "testcase-generation"
-  const num   = pr.number;                // 11
-
-  // Fetch the diff
-  const diffRes = await fetch(
-    `https://api.github.com/repos/${owner}/${repo}/pulls/${num}`,
-    {
-      headers: {
-        Accept: 'application/vnd.github.v3.diff',
-        'User-Agent': 'webhook-diff-app',
-        // Authorization: `Bearer ${process.env.GITHUB_TOKEN}`
-      }
-    }
-  );
-
-  const diff = await diffRes.text();
-  console.log(`=== Diff for PR #${num} (${pr.title}) ===`);
-  console.log(diff);
+  res.sendStatus(200);
 });
 
 
