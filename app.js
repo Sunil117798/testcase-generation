@@ -9,12 +9,18 @@ app.post('/webhook', async (req, res) => {
    
   const { action, pull_request: pr, repository } = req.body;
 
+  // Check if this is a PR event
+  if (!pr) {
+    console.log("Not a pull request event");
+    return res.sendStatus(200);
+  }
+
   // Only process merged PRs
   console.log("action: ", action);
   console.log("pr.merged: ", pr.merged);
   if (action !== 'closed' || !pr.merged) {
     console.log("not a merged PR");
-    return;
+    return res.sendStatus(200);
   }
 
   const owner = repository.owner.login;   // "Sunil117798"
