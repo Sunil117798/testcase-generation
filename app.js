@@ -45,7 +45,9 @@ app.post('/webhook', async (req, res) => {
   console.log(`Diff saved to: ${filepath}`);
 
   console.log("----------Diff started processing successfully----------");
+  console.log(1);
   console.log(diff);
+  console.log(2);
   console.log("----------Diff processing completed----------");
 
   res.sendStatus(200);
