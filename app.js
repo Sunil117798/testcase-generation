@@ -15,19 +15,49 @@ app.post('/webhook', async (req, res) => {
     const repo  = repository.name;
     const num   = pr.number;
 
-    // Get the diff
-    const diffRes = await fetch(
+    // Get PR details to compare base and head
+    const prDetailsRes = await fetch(
       `https://api.github.com/repos/${owner}/${repo}/pulls/${num}`,
       {
         headers: {
           Authorization: `Bearer ${TOKEN}`,
-          Accept: 'application/vnd.github.v3.diff',
+          Accept: 'application/vnd.github.v3+json',
           'User-Agent': 'my-app'
         }
       }
     );
-    const diff = await diffRes.text();
-    console.log(diff);
+    const prData = await prDetailsRes.json();
+    
+    const baseSha = prData.base.sha;
+    const headSha = prData.head.sha;
+    
+    console.log(`Base branch: ${prData.base.ref} (${baseSha})`);
+    console.log(`Head branch: ${prData.head.ref} (${headSha})`);
+
+    // Get comparison between base and head
+    const compareRes = await fetch(
+      `https://api.github.com/repos/${owner}/${repo}/compare/${baseSha}...${headSha}`,
+      {
+        headers: {
+          Authorization: `Bearer ${TOKEN}`,
+          'User-Agent': 'my-app'
+        }
+      }
+    );
+    const comparison = await compareRes.json();
+    
+    console.log(`Files changed: ${comparison.files?.length || 0}`);
+    console.log(`Commits: ${comparison.commits?.length || 0}`);
+    console.log(`Additions: ${comparison.stats?.additions || 0}`);
+    console.log(`Deletions: ${comparison.stats?.deletions || 0}`);
+    
+    // List changed files
+    if (comparison.files) {
+      comparison.files.forEach(file => {
+        console.log(`- ${file.filename} (${file.status})`);
+      });
+    }
+    
     console.log("pull request merged end");
   }
 
