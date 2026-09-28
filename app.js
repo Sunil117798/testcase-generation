@@ -33,17 +33,20 @@ app.post('/webhook', async (req, res) => {
   const diffRes = await fetch(diffurl);
   const diff = await diffRes.text();
   console.log(`=== Diff for PR #${pull_request.number} (${pull_request.title}) ===`);
-  console.log(diff);
 
-  // Save diff to file
-//   const diffsDir = path.join(__dirname, 'diffs');
-//   if (!fs.existsSync(diffsDir)) {
-//     fs.mkdirSync(diffsDir);
-//   }
-//   const filename = `pr-${pull_request.number}-${Date.now()}.diff`;
-//   const filepath = path.join(diffsDir, filename);
-//   fs.writeFileSync(filepath, diff);
-//   console.log(`Diff saved to: ${filepath}`);
+//   Save diff to file
+  const diffsDir = path.join(__dirname, 'diffs');
+  if (!fs.existsSync(diffsDir)) {
+    fs.mkdirSync(diffsDir);
+  }
+  const filename = `pr-${pull_request.number}-${Date.now()}.diff`;
+  const filepath = path.join(diffsDir, filename);
+  fs.writeFileSync(filepath, diff);
+  console.log(`Diff saved to: ${filepath}`);
+
+  console.log("----------Diff started processing successfully----------");
+  console.log(diff);
+  console.log("----------Diff processing completed----------");
 
   res.sendStatus(200);
 });
