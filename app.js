@@ -5,11 +5,12 @@ app.use(express.json());
 const TOKEN = process.env.GITHUB_TOKEN;
 
 app.post('/webhook', async (req, res) => {
-    console.log("webhook start");
+   
   const { action, pull_request: pr, repository } = req.body;
 
   // Only act on the event you care about
   if (action === 'closed' && pr.merged) {
+    console.log("pull request merged start");
     const owner = repository.owner.login;
     const repo  = repository.name;
     const num   = pr.number;
@@ -27,10 +28,8 @@ app.post('/webhook', async (req, res) => {
     );
     const diff = await diffRes.text();
     console.log(diff);
+    console.log("pull request merged end");
   }
-
-  console.log("webhook end");
-  
 
   res.sendStatus(200);
 });
