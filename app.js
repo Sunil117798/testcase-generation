@@ -6,15 +6,11 @@ const TOKEN = process.env.GITHUB_TOKEN;
 
 app.post('/webhook', async (req, res) => {
   console.log("webhook start....");
-  console.log("Headers:", req.headers);
-  console.log("Body:", req.body);
    
   // smee.io wraps the payload in a "payload" field
   const payload = req.body.payload ? JSON.parse(req.body.payload) : req.body;
   const { action, pull_request, repository } = payload;
-  console.log("action:", action);
-  console.log("pull_request:", pull_request);
-  console.log("repository:", repository);
+
 
   // Check if this is a PR event
   if (!pull_request) {
@@ -22,8 +18,20 @@ app.post('/webhook', async (req, res) => {
     return res.sendStatus(200);
   }
 
+  // Only process merged PRs
+  if (action !== 'closed' || !pull_request.merged) {
+    console.log("Not a merged PR");
+    return res.sendStatus(200);
+  }
+
   const diffurl = `https://github.com/${repository.owner.login}/${repository.name}/pull/${pull_request.number}.diff`;
   console.log("Diff URL:", diffurl);
+
+  // Fetch the diff
+  const diffRes = await fetch(diffurl);
+  const diff = await diffRes.text();
+  console.log(`=== Diff for PR #${pull_request.number} (${pull_request.title}) ===`);
+  console.log(diff);
 
   res.sendStatus(200);
 });
