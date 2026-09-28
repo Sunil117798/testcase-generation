@@ -6,8 +6,13 @@ const TOKEN = process.env.GITHUB_TOKEN;
 
 app.post('/webhook', async (req, res) => {
   console.log("webhook start....");
+  console.log("Headers:", req.headers);
+  console.log("Body:", req.body);
    
   const { action, pull_request, repository } = req.body;
+  console.log("action:", action);
+  console.log("pull_request:", pull_request);
+  console.log("repository:", repository);
 
   // Check if this is a PR event
   if (!pull_request) {
