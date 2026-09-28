@@ -7,7 +7,7 @@ const PORT = 3000;
 app.use(express.json());
 
 // Webhook endpoint
-app.post("/webhook/bitbucket", (req, res) => {
+app.post("/webhook/", (req, res) => {
 
     const data = req.body;
 
