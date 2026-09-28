@@ -13,10 +13,10 @@ app.post('/webhook', express.json({type: 'application/json'}), (request, respons
 
   // Respond to indicate that the delivery was successfully received.
   // Your server should respond with a 2XX response within 10 seconds of receiving a webhook delivery. If your server takes longer than that to respond, then GitHub terminates the connection and considers the delivery a failure.
-  response.status(202).send('Accepted');
+//   response.status(202).send('Accepted');
 
-  // Check the `x-github-event` header to learn what event type was sent.
-  const githubEvent = request.headers['x-github-event'];
+//   // Check the `x-github-event` header to learn what event type was sent.
+//   const githubEvent = request.headers['x-github-event'];
 
   // You should add logic to handle each event type that your webhook is subscribed to.
   // For example, this code handles the `issues` and `ping` events.
@@ -26,7 +26,7 @@ app.post('/webhook', express.json({type: 'application/json'}), (request, respons
   //
   // For more information about the data that you can expect for each event type, see [AUTOTITLE](/webhooks/webhook-events-and-payloads).
   
-  console.log("sunil")
+  console.log("MY NAME IS SUNIL KUMAR AND I AM FROM RAJASTHAN")
 });
 
 
