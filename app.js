@@ -1,4 +1,6 @@
 const express = require('express');
+const fs = require('fs');
+const path = require('path');
 const app = express();
 app.use(express.json());
 
@@ -32,6 +34,16 @@ app.post('/webhook', async (req, res) => {
   const diff = await diffRes.text();
   console.log(`=== Diff for PR #${pull_request.number} (${pull_request.title}) ===`);
   console.log(diff);
+
+  // Save diff to file
+  const diffsDir = path.join(__dirname, 'diffs');
+  if (!fs.existsSync(diffsDir)) {
+    fs.mkdirSync(diffsDir);
+  }
+  const filename = `pr-${pull_request.number}-${Date.now()}.diff`;
+  const filepath = path.join(diffsDir, filename);
+  fs.writeFileSync(filepath, diff);
+  console.log(`Diff saved to: ${filepath}`);
 
   res.sendStatus(200);
 });
