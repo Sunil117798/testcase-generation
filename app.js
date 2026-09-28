@@ -31,9 +31,14 @@ app.post('/webhook', express.json({type: 'application/json'}), (request, respons
 
 
 
-app.get("/",(req,res)=>{
-    res.send("Hello World")
-})
+    app.get("/",(req,res)=>{
+        res.send("Hello World")
+    })
+    app.get("/test",(req,res)=>{
+        res.send("Hello World")
+    })
+
+
 
 // This defines the port where your server should listen.
 // 3000 matches the port that you specified for webhook forwarding. For more information, see [Forward webhooks](#forward-webhooks).
