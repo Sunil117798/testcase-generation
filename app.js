@@ -5,6 +5,7 @@ app.use(express.json());
 const TOKEN = process.env.GITHUB_TOKEN;
 
 app.post('/webhook', async (req, res) => {
+    console.log("webhook start");
    
   const { action, pull_request: pr, repository } = req.body;
 
@@ -61,6 +62,7 @@ app.post('/webhook', async (req, res) => {
     console.log("pull request merged end");
   }
 
+  console.log("webhook end");
   res.sendStatus(200);
 });
 
