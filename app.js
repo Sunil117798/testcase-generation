@@ -97,7 +97,7 @@ app.post('/webhook', async (req, res) => {
     });
 
     const testCases = response.choices[0].message.content;
-    console.log("=== Generated Unit Test Cases ===");
+    console.log("=== ==Generated Unit Test Cases ========");
     console.log(testCases);
 
     // Create test directory
